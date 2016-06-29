@@ -1,0 +1,16 @@
+Package: RisingAshes
+Title: Companion to the Paper "Rising Out of the Ashes"
+Version: 0.1-0
+Author: Facundo Muñoz
+Maintainer: Facundo Muñoz <facundo.munoz@orleans.inra.fr>
+Description: Data and code to reproduce the results in
+    F. Muñoz, B. Marçais, J. Dufour and A. Dowkiw (2016).
+    Rising Out of the Ashes: Additive Genetic Variation for Crown and Collar
+    Resistance to Hymenoscyphus fraxineus in Fraxinus excelsior. Phytopathology.
+    http://dx.doi.org/10.1094/PHYTO-11-15-0284-R
+Depends:
+    R (>= 3.2.3)
+License: GPL (>= 3)
+LazyData: true
+Encoding: UTF-8
+RoxygenNote: 5.0.1
