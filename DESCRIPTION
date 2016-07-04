@@ -12,5 +12,19 @@ Depends:
     R (>= 3.2.3)
 License: GPL (>= 3)
 LazyData: true
+Imports: INLA, ggplot2
+Suggests: AnimalINLA,
+    boot,
+    plyr,
+    dplyr,
+    ggthemes,
+    gridExtra,
+    lme4,
+    lattice,
+    knitr,
+    rmarkdown,
+    tidyr,
+    viridis
+Additional_repositories: http://www.math.ntnu.no/inla/R/testing
 Encoding: UTF-8
 RoxygenNote: 5.0.1
