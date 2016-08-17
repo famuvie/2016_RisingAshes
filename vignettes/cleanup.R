@@ -15,7 +15,6 @@
 
 library(tidyr)
 library(dplyr)
-library(reshape2)
 
 
 
@@ -63,12 +62,8 @@ names(dat) <-
 mdat <- tidyr::gather(dat, variable, value, contains("_"))
 
 ## Separate the meta-variable from the Year
-mdat <- cbind(
-  mdat[, id.vars],
-  reshape2::colsplit(mdat$variable,
-                     pattern='_',
-                     names=c('variable', 'Year')),
-  value=mdat[, "value"]) %>%
+mdat <-
+  tidyr::separate(mdat, variable, c('variable', 'Year')) %>%
   transform(
     variable = as.factor(variable),
     Year     = ordered(Year)
