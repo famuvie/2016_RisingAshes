@@ -6,6 +6,10 @@
 \usage{
 Devecey_spde(coord = Devecey[, c("X", "Y")])
 }
+\arguments{
+\item{coord}{a two-column matrix with coordinates. By default it takes the
+coordinates of the Devecey dataset.}
+}
 \value{
 A list with the observation locations (loc) a prediction mesh and an
   SPDE object which includes the prior distributions for its hyperparameters

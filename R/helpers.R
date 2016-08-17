@@ -17,15 +17,13 @@ fam_additive <- function(id, fam) {
   ped <- with(Devecey, famped(id, fam))
 
   ## Inverse relationship matrix
-  ## Need the package AnimalINLA
-  ## http://www.r-inla.org/related-projects/animalinla
-  Ainv <- AnimalINLA::compute.Ainverse(ped)
+  Ainv <- compute_Ainverse(ped)
 
   ## Ainverse in sparse format
   Cmat <- with(Ainv,
-               sparseMatrix(i = Ainverse[,1],
-                            j = Ainverse[,2],
-                            x = Ainverse[,3]))
+               Matrix::sparseMatrix(i = Ainverse[,1],
+                                    j = Ainverse[,2],
+                                    x = Ainverse[,3]))
 
 
   ## Family-wise sum-to-zero constraint matrix
@@ -78,8 +76,12 @@ famped <- function(id, fam) {
 
 #' SPDE structure for the Devecey dataset
 #'
+#' @param coord a two-column matrix with coordinates. By default it takes the
+#'   coordinates of the Devecey dataset.
+#'
 #' @return A list with the observation locations (loc) a prediction mesh and an
 #'   SPDE object which includes the prior distributions for its hyperparameters
+#' @import INLA
 #' @export
 Devecey_spde <- function(coord = Devecey[,c('X', 'Y')]) {
   loc <- as.matrix(unique(coord))
@@ -139,29 +141,33 @@ Devecey_spde <- function(coord = Devecey[,c('X', 'Y')]) {
 }
 
 
-# Plotting fitted vs. obs.
+#' Include a suffix to variable names
+#'
+#' Used with \code{\link[INLA]{inla.stack}} for building effect stacks.
+#'
+#' @param x a data.frame
+#' @param suffix character string to be appended to variable names
+#' @param makeNA logical. If \code{TRUE}, returns the suffixed data.frame filled
+#'   with \code{NA}.
 #' @export
-plot.fitvsobs <- function(x, y, color = NULL, shape = NULL, data, ...) {
-  eval(substitute(
-    ggplot(data,
-           aes(x, y, color = color, shape = shape)) +
-      geom_jitter(...) +
-      geom_abline(int = 0, sl = 1, col = 'darkgray') +
-      guides(shape = 'none',
-             color = guide_legend(keyheight = 0.5))
-  ))
-}
-
-
-#' @export
-sufix <- function(x, sufix, makeNA = FALSE) {
-  z <- structure(x, names = paste(names(x), sufix, sep = '.'))
+suffix <- function(x, suffix, makeNA = FALSE) {
+  z <- structure(x, names = paste(names(x), suffix, sep = '.'))
   if(makeNA) z[] <- NA
   z
 }
 
 
-## perform a shift on a (list of) marginals
+#' Perform a shift on a (list of) marginals
+#'
+#' Add a constant to a \code{INLA}'s marginal distribution or list of marginals.
+#'
+#' @param mar either a single marginal or a list of marginals
+#' @param mu numeric. Constant to be added.
+#'
+#' \code{INLA}'s marginals are two-column numeric matrices with abscissas and
+#' ordinates. This function adds a constant \code{mu} to the ordinates (i.e.,
+#' second column).
+#'
 #' @export
 shift_marginal <- function(mar, mu) {
   if (is.list(mar))
@@ -169,4 +175,166 @@ shift_marginal <- function(mar, mu) {
   else
     mar[, 1] <- mar[, 1] + mu
   mar
+}
+
+#' Inverse logit function
+#'
+#' Compute the inverse logit
+#'
+#' @param x value(s) to be transformed
+#'
+#' \deqn{p = exp(x)/(1 + exp(x))}
+#'
+#' @export
+inv.logit <- function(x) {
+  p <- exp(x)/(1 + exp(x))
+  p <- ifelse(is.na(p) & !is.na(x), 1, p)
+}
+
+
+#' Pedigree functions
+#'
+#' These functions are borrowed from the package \code{AnimalINLA}
+#'
+#' @param pedigree 3-col numerical matrix
+#' @references http://www.r-inla.org/related-projects/animalinla
+#' @name pedigree
+NULL
+
+
+#' @describeIn pedigree Check, recode and compute the inverse relationship matrix
+#' @export
+compute_Ainverse <- function (pedigree)
+{
+  # print("Checking pedigree...")
+  # CheckPedigree = CheckPedigree(pedigree)
+  # print("Sorting the pedigree chronologically...")
+  sorted.pedigree = SortPedigree(pedigree)
+  xx = RenamePedigree(sorted.pedigree)
+  # print("Computing the A matrix...")
+  Amatrix = Ainverse(xx$pedigree)
+  ret = list(Ainverse = Amatrix, map = xx$map)
+  class(ret) = "ped"
+  return(ret)
+}
+
+#' @describeIn pedigree Sort a pedigree chronologically
+SortPedigree <- function (pedigree)
+{
+  pedigree = as.matrix(pedigree)
+  n <- dim(pedigree)[1]
+  g <- rep(0, n)
+  s <- rep(1, n)
+  t <- matrix(c(NA, NA, NA), 1, 3)
+  p <- pedigree
+  continue = TRUE
+  iteration = 0
+  ID = pedigree[, 1]
+  while (continue == TRUE) {
+    iteration = iteration + 1
+    for (i in 1:n) {
+      if (!(p[i, 2]) %in% t[, 1]) {
+        t <- rbind(t, p[p[, 1] == p[i, 2], ])
+        ii = which(ID == p[i, 2])
+        g[ii] <- g[ii] + 1
+      }
+      if (!(p[i, 3]) %in% t[, 1]) {
+        t <- rbind(t, p[p[, 1] == p[i, 3], ])
+        ii = which(ID == p[i, 3])
+        g[ii] <- g[ii] + 1
+      }
+    }
+    if (dim(t)[1] == 1) {
+      continue = FALSE
+    }
+    else {
+      nn = dim(t)[1]
+      t = t[-1, ]
+      p = t
+      {
+        if (nn == 2) {
+          n = 1
+          p = matrix(p, nrow = 1, ncol = 3)
+        }
+        else n <- dim(p)[1]
+      }
+      t = matrix(c(NA, NA, NA), 1, 3)
+    }
+  }
+  oo = order(g, decreasing = TRUE)
+  sorted.pedigree = pedigree[oo, ]
+  return(sorted.pedigree)
+}
+
+
+#' @describeIn pedigree Recode a pedigree
+RenamePedigree <- function (pedigree)
+{
+  n = dim(pedigree)[1]
+  map = cbind(pedigree[, 1], 1:n)
+  ped1 = pedigree
+  for (i in 1:n) ped1[pedigree == map[i, 1]] = i
+  red = list(pedigree = ped1, map = map)
+  return(red)
+}
+
+#' @describeIn pedigree Compute the inverse relationship matrix
+Ainverse <- function (pedigree)
+{
+  individ = pedigree[, 1]
+  parent1 = pedigree[, 2]
+  parent2 = pedigree[, 3]
+  n = dim(pedigree)[1]
+  u = numeric(n)
+  v = numeric(n)
+  p = pmin(parent1, parent2)
+  q = pmax(parent1, parent2)
+  Asave <- rep(NA, 3)
+  for (k in 1:n) {
+    if (p[k] == 0 & q[k] == 0)
+      v[k] = 1
+    if (p[k] == 0 & q[k] != 0)
+      v[k] = sqrt(1 - 0.25 * u[q[k]])
+    if (p[k] != 0 & q[k] != 0)
+      v[k] = sqrt(1 - 0.25 * u[q[k]] - 0.25 * u[p[k]])
+    if (k < n) {
+      for (i in (k + 1):n) {
+        if (p[i] >= k)
+          v[i] = 0.5 * v[p[i]] + 0.5 * v[q[i]]
+        else if (p[i] < k & q[i] >= k)
+          v[i] = 0.5 * v[q[i]]
+        else if (q[i] < k)
+          v[i] = 0
+        else stop("this should not happen")
+      }
+      u[k:n] = u[k:n] + v[k:n]^2
+    }
+
+    d = v[k]^(-2)
+    if (p[k] > 0) {
+      xx = cbind(c(k, p[k], q[k], p[k], p[k], q[k]), c(k,
+                                                       k, k, p[k], q[k], q[k]), c(d, -0.5 * d, -0.5 *
+                                                                                    d, 0.25 * d, 0.25 * d, 0.25 * d))
+    }
+    if (p[k] == 0 & q[k] > 0) {
+      xx = cbind(c(k, q[k], q[k]), c(k, k, q[k]), c(d,
+                                                    -0.5 * d, 0.25 * d))
+    }
+    if (q[k] == 0 & p[k] == 0) {
+      xx = c(k, k, d)
+    }
+    Asave = rbind(Asave, xx)
+  }
+  Asave = Asave[-1, ]
+  nA <- dim(Asave)[1]
+  # print("Summing up.....")
+  for (i in 1:(nA - 1)) {
+    idx = i - 1 + which((Asave[i, 1] == Asave[i:nA, 1]) &
+                          (Asave[i, 2] == Asave[i:nA, 2]))
+    Asave[i, 3] = sum(Asave[idx, 3])
+    Asave[idx[-1], 3] = NA
+  }
+  Asave = Asave[!is.na(Asave[, 3]), ]
+  row.names(Asave) <- NULL
+  return(Asave)
 }
