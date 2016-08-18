@@ -1,10 +1,9 @@
 # RisingAshes
 
-Data and code to the to reproduce the results in [Muñoz et al.
-(2016)](http://dx.doi.org/10.1094/PHYTO-11-15-0284-R) [1] ([bioRXiv
-preprint](http://dx.doi.org/10.1101/031393)), which analyzes the genetic
-variation in susceptibility to a pathogen using a spatio-temporal hierarchical
-Bayesian model implemented with [INLA](http://www.r-inla.org/).
+Data and code to the to reproduce the results in [Muñoz et al. 
+(2016)](http://dx.doi.org/10.1094/PHYTO-11-15-0284-R) [1], which analyzes the
+genetic variation in susceptibility to a pathogen using a spatio-temporal
+hierarchical Bayesian model implemented with [INLA](http://www.r-inla.org/).
 
 This package contains three vignettes with all the code necessary to reproduce
 the results from the paper (and more results that did not make it to the paper).
@@ -40,5 +39,5 @@ install.packages('INLA', repos = 'http://www.math.ntnu.no/inla/R/testing')
 [1] **Muñoz, F., Marçais, B., Dufour, J., and Dowkiw, A. 2016**. Rising Out of 
 the Ashes: Additive Genetic Variation for Crown and Collar Resistance to 
 Hymenoscyphus fraxineus in Fraxinus excelsior. *Phytopathology* 106:1-10. DOI: 
-[10.1094/PHYTO-11-15-0284-R]((http://dx.doi.org/10.1094/PHYTO-11-15-0284-R). A
+[10.1094/PHYTO-11-15-0284-R](http://dx.doi.org/10.1094/PHYTO-11-15-0284-R). A
 preprint is available at [bioRXiv](http://dx.doi.org/10.1101/031393).
