@@ -31,6 +31,12 @@ is included in the vignettes, but is not executed by default at compilation
 time. For reproducing the results you might want to setup the computation on a
 server.
 
+If you want to fit the models for yourself, install `INLA` with:
+
+```r
+install.packages('INLA', repos = 'http://www.math.ntnu.no/inla/R/testing')
+```
+
 [1] **Muñoz, F., Marçais, B., Dufour, J., and Dowkiw, A. 2016**. Rising Out of 
 the Ashes: Additive Genetic Variation for Crown and Collar Resistance to 
 Hymenoscyphus fraxineus in Fraxinus excelsior. *Phytopathology* 106:1-10. DOI: 
