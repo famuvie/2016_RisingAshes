@@ -15,7 +15,7 @@ To browse offline or to play with the data yourself, install the package locally
 as follows.
 
 ```r 
-devtools:::install_github('famuvie/RisingAshes') 
+devtools:::install_github('famuvie/2016_RisingAshes') 
 library(RisingAshes) 
 browseVignettes(package = 'RisingAshes') 
 data(Devecey) 
@@ -25,13 +25,14 @@ Note that the package includes some [helper functions](R/helpers.R) in a
 separate file.
 
 Since the computations can take several hours, all the expensive results are 
-lazy-loaded with the package, so that you can explore the results without the 
-need of recomputing everything. The code for producing the results is included 
-in the vignettes, but is not executed by default at compilation time. For 
-reproducing the results you might want to setup the computation on a server.
+lazy-loaded with the package (184 Mb file), so that you can explore the results
+without the need of recomputing everything. The code for producing the results
+is included in the vignettes, but is not executed by default at compilation
+time. For reproducing the results you might want to setup the computation on a
+server.
 
-[1] F. Muñoz, B. Marçais, J. Dufour and A. Dowkiw (2016). Rising Out of the 
-Ashes: Additive Genetic Variation for Crown and Collar Resistance to 
-Hymenoscyphus fraxineus in Fraxinus excelsior. Phytopathology. In Press. DOI: 
-10.1094/PHYTO-11-15-0284-R. A preprint is available at
-[bioRXiv](http://dx.doi.org/10.1101/031393).
+[1] **Muñoz, F., Marçais, B., Dufour, J., and Dowkiw, A. 2016**. Rising Out of 
+the Ashes: Additive Genetic Variation for Crown and Collar Resistance to 
+Hymenoscyphus fraxineus in Fraxinus excelsior. *Phytopathology* 106:1-10. DOI: 
+[10.1094/PHYTO-11-15-0284-R]((http://dx.doi.org/10.1094/PHYTO-11-15-0284-R). A
+preprint is available at [bioRXiv](http://dx.doi.org/10.1101/031393).
