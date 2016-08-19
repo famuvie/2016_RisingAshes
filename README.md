@@ -10,42 +10,55 @@ the results from the paper (and more results that did not make it to the paper).
 
 You can use this repository in one of several ways:
 
-1. You can peek at the code 
-[online](https://github.com/famuvie/RisingAshes/tree/master/inst/doc).
+1. **Installation free**
 
-2. To browse offline or to explore the data yourself, install the package
-locally
-as follows.
+    You can peek at the code online here. The code for fitting the models and 
+    producing all results is within [vignettes/](vignettes). Note that the
+    vignettes use some helper functions from a separate [file](R/helpers.R)
+
+
+2. **Light-weight installation**
+
+    To browse offline or to explore the data yourself, install the package 
+    locally as follows. This will also install a number of additional packages
+    for data manipulation and plotting.
 
     ```r 
     if(!require(devtools)) install.packages('devtools')
-    devtools:::install_github('famuvie/2016_RisingAshes') 
-    library(RisingAshes) 
-    browseVignettes('RisingAshes') 
-    data(Devecey) 
-    str(Devecey)
+    devtools:::install_github('famuvie/2016_RisingAshes')
+    ```
+    
+    ```r
+    library(RisingAshes)
+    browseVignettes('RisingAshes')  # vignettes
+    str(Devecey)                    # data
     ```
 
-    Note that the package includes some [helper functions](R/helpers.R) in a
-    separate file.
+3. **Medium-weight installation**
 
-3. To reproduce the vignettes or to explore the results, download the cached
-results file and then reload the package
+    To reproduce the vignettes or to explore the results, download the cached 
+    results file (184 Mb file) and then reload the package
 
     ```r
-    url <- released file
-    destfile <- system.file('R', package = 'RisingAshes')
-    download.file(url, destfile)
+    if(!require(httr)) install.packages('httr')
+    url <- "https://github.com/famuvie/2016_RisingAshes/releases/download/V1.0/sysdata.rda"
+    tmp <- httr::GET(url,httr::write_disk(tempfile()), httr::progress("down"))
+    instdir <- system.file(package = 'RisingAshes')
+    tools:::sysdata2LazyLoadDB(tmp$content, file.path(instdir, "R"), compress = 3L)
+    detach(package:RisingAshes, unload=TRUE)
     library(RisingAshes)
     ```
-  Since the computations can take several hours, all the expensive results are 
-  lazy-loaded with the package (184 Mb file), so that you can explore the results
-  without the need of recomputing everything. The code for producing the results
-  is included in the vignettes, but is not executed by default at compilation
-  time. 
+
+    Since the computations can take several hours, all the expensive results are
+    lazy-loaded with the package, so that you can explore the results without
+    the need of recomputing everything. The code for producing the results is
+    included in the vignettes, but is not executed by default at compilation 
+    time.
   
-4. If you want to fit the models and fully reproducing the results for yourself,
-install `INLA` with:
+4. **Full installation**
+
+    If you want to fit the models and fully reproducing the results for yourself, 
+    install `INLA` with:
 
     ```r
     install.packages('INLA', repos = 'http://www.math.ntnu.no/inla/R/testing')
