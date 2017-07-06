@@ -68,6 +68,10 @@ You can use this repository in one of several ways:
     server.
 
 
+You can also download a poster for a summary of the article:
+
+[![](inst/poster_thumbnail.png)](http://prodinra.inra.fr/ft?id={A660AB0A-ADAB-4403-954D-38D91BE255AB})
+
 [1] **Muñoz, F., Marçais, B., Dufour, J., and Dowkiw, A. 2016**. Rising Out of 
 the Ashes: Additive Genetic Variation for Crown and Collar Resistance to 
 Hymenoscyphus fraxineus in Fraxinus excelsior. *Phytopathology* 106:1-10. DOI: 
