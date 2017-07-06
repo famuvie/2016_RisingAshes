@@ -5,6 +5,8 @@ Data and code to the to reproduce the results in [Muñoz et al.
 genetic variation in susceptibility to a pathogen using a spatio-temporal
 hierarchical Bayesian model implemented with [INLA](http://www.r-inla.org/).
 
+![](https://github.com/famuvie/2016_RisingAshes/releases/download/V1.0/poster_thumbnail.png)
+
 This package contains three vignettes with all the code necessary to reproduce
 the results from the paper (and more results that did not make it to the paper).
 
